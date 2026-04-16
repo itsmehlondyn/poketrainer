@@ -1,0 +1,59 @@
+extends ../layout
+
+block content
+  .profile-page
+    .trainer-card
+      .trainer-card-left
+        .avatar-wrapper
+          if profileUser.avatar
+            img.trainer-avatar(src=profileUser.avatar alt="Trainer Avatar")
+          else
+            .trainer-avatar.avatar-placeholder
+              span.avatar-emoji 🧢
+          a.btn.btn-sm.btn-secondary(href="/profile/edit") Edit Profile
+
+        .badge-display
+          h3 Gym Badges
+          .badges-grid
+            - for (let i = 1; i <= 8; i++)
+              .badge-slot(class=i <= profileUser.badges ? 'earned' : 'empty')
+                span= i <= profileUser.badges ? '🏅' : '○'
+
+      .trainer-card-right
+        .trainer-info
+          h1.trainer-name= profileUser.username
+          p.trainer-title= profileUser.trainerTitle
+          if profileUser.hometown
+            p.trainer-hometown 📍 #{profileUser.hometown}
+          if profileUser.bio
+            p.trainer-bio= profileUser.bio
+
+        .team-summary
+          .team-header
+            h2 My Team
+              span.team-count  (#{team.length}/6)
+            a.btn.btn-sm.btn-primary(href="/team") Manage Team
+
+          if team.length === 0
+            .empty-team
+              p.muted You haven't added any Pokémon yet.
+              a.btn.btn-primary(href="/team") Build Your Team →
+          else
+            .team-grid
+              each pokemon in team
+                .team-card
+                  img.pokemon-sprite(
+                    src=pokemon.spriteUrl
+                    alt=pokemon.name
+                    loading="lazy"
+                  )
+                  .pokemon-name= pokemon.displayName
+                  .type-badges
+                    each type in pokemon.types
+                      span.type-badge(class='type-' + type)= type
+
+    .profile-actions
+      a.btn.btn-outline(href=`/profile/${profileUser.username}`) 
+        | 👁 View Public Card
+      a.btn.btn-outline(href="/pokedex") 
+        | 📖 Browse Pokédex

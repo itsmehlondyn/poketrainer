@@ -1,0 +1,56 @@
+extends ../layout
+
+block content
+  .profile-page
+    .trainer-card.public-card
+      .trainer-card-left
+        .avatar-wrapper
+          if profileUser.avatar
+            img.trainer-avatar(src=profileUser.avatar alt="Trainer Avatar")
+          else
+            .trainer-avatar.avatar-placeholder
+              span.avatar-emoji 🧢
+
+        .badge-display
+          h3 Gym Badges
+          .badges-grid
+            - for (let i = 1; i <= 8; i++)
+              .badge-slot(class=i <= profileUser.badges ? 'earned' : 'empty')
+                span= i <= profileUser.badges ? '🏅' : '○'
+
+      .trainer-card-right
+        .trainer-info
+          h1.trainer-name= profileUser.username
+          p.trainer-title= profileUser.trainerTitle
+          if profileUser.hometown
+            p.trainer-hometown 📍 #{profileUser.hometown}
+          if profileUser.bio
+            p.trainer-bio= profileUser.bio
+
+        .team-summary
+          h2 Their Team
+            span.team-count  (#{team.length}/6)
+
+          if team.length === 0
+            .empty-team
+              p.muted This trainer hasn't built a team yet.
+          else
+            .team-grid
+              each pokemon in team
+                a.team-card(href=`/pokedex/${pokemon.name}`)
+                  img.pokemon-sprite(
+                    src=pokemon.spriteUrl
+                    alt=pokemon.name
+                    loading="lazy"
+                  )
+                  .pokemon-name= pokemon.displayName
+                  .type-badges
+                    each type in pokemon.types
+                      span.type-badge(class='type-' + type)= type
+
+    .profile-actions
+      if isOwner
+        a.btn.btn-primary(href="/profile/edit") ✏️ Edit My Profile
+        a.btn.btn-outline(href="/team") Manage Team
+      else
+        a.btn.btn-outline(href="/pokedex") Browse Pokédex

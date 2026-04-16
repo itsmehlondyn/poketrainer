@@ -1,0 +1,37 @@
+extends ../layout
+
+block content
+  .auth-page
+    .auth-card
+      .auth-header
+        .pokeball-icon ⚙
+        h1 Trainer Login
+        p.subtitle Welcome back to your journey
+
+      form.auth-form(action="/login" method="POST")
+        .form-group
+          label(for="username") Trainer Name
+          input#username(
+            type="text"
+            name="username"
+            placeholder="Enter your username"
+            required
+            autocomplete="username"
+          )
+
+        .form-group
+          label(for="password") Password
+          input#password(
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            required
+            autocomplete="current-password"
+          )
+
+        button.btn.btn-primary(type="submit") 
+          span ⚡ Login
+
+      .auth-footer
+        p Don't have an account? 
+          a(href="/register") Create one here

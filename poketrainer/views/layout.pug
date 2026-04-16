@@ -1,0 +1,40 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title + ' | PokéTrainer'
+    link(rel="stylesheet" href="/css/style.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap")
+  body
+    nav.navbar
+      .nav-brand
+        a(href="/") 
+          span.logo-icon 🔴
+          span.logo-text PokéTrainer
+      .nav-links
+        if user
+          a(href="/profile") My Profile
+          a(href="/team") My Team
+          a(href="/pokedex") Pokédex
+          form(action="/logout" method="POST" style="display:inline")
+            button.btn-logout(type="submit") Logout
+        else
+          a(href="/login") Login
+          a(href="/register") Register
+
+    main.container
+      if success && success.length
+        .flash.flash-success
+          each msg in success
+            p= msg
+      if error && error.length
+        .flash.flash-error
+          each msg in error
+            p= msg
+
+      block content
+
+    footer.site-footer
+      p © 2024 PokéTrainer &mdash; Built with Node.js, Express & PokéAPI

@@ -1,0 +1,63 @@
+extends ../layout
+
+block content
+  .auth-page
+    .auth-card.edit-card
+      .auth-header
+        h1 Edit Profile
+        p.subtitle Update your trainer info
+
+      form.auth-form(action="/profile/edit" method="POST" enctype="multipart/form-data")
+
+        .avatar-upload-section
+          .current-avatar
+            if profileUser.avatar
+              img(src=profileUser.avatar alt="Current Avatar" style="width:80px;height:80px;border-radius:50%;object-fit:cover;")
+            else
+              .avatar-placeholder(style="width:80px;height:80px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:2rem;") 🧢
+          .upload-controls
+            label(for="avatar") Trainer Avatar
+            input#avatar(type="file" name="avatar" accept="image/*")
+            p.hint Max 2MB — JPG, PNG, GIF, WebP
+
+        .form-group
+          label(for="trainerTitle") Trainer Title
+          input#trainerTitle(
+            type="text"
+            name="trainerTitle"
+            value=profileUser.trainerTitle
+            maxlength="40"
+          )
+
+        .form-group
+          label(for="hometown") Hometown
+          input#hometown(
+            type="text"
+            name="hometown"
+            value=profileUser.hometown
+            placeholder="Pallet Town"
+            maxlength="50"
+          )
+
+        .form-group
+          label(for="bio") Bio
+          textarea#bio(
+            name="bio"
+            rows="3"
+            maxlength="300"
+            placeholder="Tell other trainers about yourself..."
+          )= profileUser.bio
+
+        .form-group
+          label(for="badges") Gym Badges Earned (0–8)
+          input#badges(
+            type="number"
+            name="badges"
+            min="0"
+            max="8"
+            value=profileUser.badges
+          )
+
+        .form-row.button-row
+          a.btn.btn-outline(href="/profile") Cancel
+          button.btn.btn-primary(type="submit") 💾 Save Changes

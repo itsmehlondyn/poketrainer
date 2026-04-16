@@ -1,0 +1,29 @@
+extends ../layout
+
+block content
+  .pokedex-page
+    .page-header
+      h1 📖 Pokédex
+      p.subtitle Browse all Pokémon
+
+    .pokedex-grid
+      each poke in pokemon
+        - const name = poke.name
+        - const id = poke.url.split('/').filter(Boolean).pop()
+        - const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
+        a.pokedex-card(href=`/pokedex/${name}`)
+          .poke-number ##{id.padStart(3, '0')}
+          img.poke-thumb(
+            src=sprite
+            alt=name
+            loading="lazy"
+            onerror="this.src='/img/pokeball.png'"
+          )
+          .poke-name= name
+
+    .pagination
+      if hasPrev
+        a.btn.btn-outline(href=`/pokedex?page=${currentPage - 1}`) ← Prev
+      span.page-info Page #{currentPage} of #{totalPages}
+      if hasNext
+        a.btn.btn-outline(href=`/pokedex?page=${currentPage + 1}`) Next →

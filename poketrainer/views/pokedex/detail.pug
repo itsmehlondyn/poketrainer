@@ -1,0 +1,48 @@
+extends ../layout
+
+block content
+  .poke-detail-page
+    a.back-link(href="/pokedex") ← Back to Pokédex
+
+    .poke-detail-card
+      .poke-detail-left
+        .poke-number ##{String(pokemon.id).padStart(3, '0')}
+        img.poke-artwork(src=pokemon.sprite alt=pokemon.name)
+        if pokemon.spriteShiny
+          .shiny-toggle
+            img.poke-shiny-preview(src=pokemon.spriteShiny alt="Shiny" title="Shiny form")
+            span ✨ Shiny
+
+      .poke-detail-right
+        h1.poke-name= pokemon.name
+        if pokemon.genus
+          p.poke-genus= pokemon.genus
+        p.poke-flavor= pokemon.flavorText
+
+        .type-badges.large
+          each type in pokemon.types
+            span.type-badge(class='type-' + type)= type
+
+        .poke-meta
+          span ↕ #{pokemon.height}m
+          span ⚖ #{pokemon.weight}kg
+          if pokemon.abilities
+            span Abilities: #{pokemon.abilities.join(', ')}
+
+        .stats-section
+          h3 Base Stats
+          .stats-bars
+            each stat in pokemon.stats
+              .stat-row
+                span.stat-name= stat.name.replace('special-attack','Sp.Atk').replace('special-defense','Sp.Def').replace('-',' ')
+                .stat-bar-wrap
+                  .stat-bar(style=`width:${Math.min(100, (stat.value/255)*100)}%` data-val=stat.value)
+                span.stat-val= stat.value
+
+        .detail-actions
+          if user
+            form(action="/team/add" method="POST" style="display:inline")
+              input(type="hidden" name="pokemonName" value=pokemon.name)
+              button.btn.btn-primary(type="submit") ➕ Add to Team
+          else
+            a.btn.btn-primary(href="/login") Login to Add to Team

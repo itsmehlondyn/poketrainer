@@ -1,0 +1,78 @@
+extends ../layout
+
+block content
+  .auth-page
+    .auth-card
+      .auth-header
+        .pokeball-icon 🌟
+        h1 Create Account
+        p.subtitle Begin your Pokémon journey
+
+      form.auth-form(action="/register" method="POST")
+        .form-row
+          .form-group
+            label(for="username") Trainer Name *
+            input#username(
+              type="text"
+              name="username"
+              placeholder="ash_ketchum"
+              required
+              minlength="3"
+              maxlength="20"
+              pattern="[a-zA-Z0-9_]+"
+              title="Letters, numbers, and underscores only"
+            )
+
+          .form-group
+            label(for="email") Email *
+            input#email(
+              type="email"
+              name="email"
+              placeholder="trainer@pokecenter.com"
+              required
+            )
+
+        .form-group
+          label(for="trainerTitle") Trainer Title
+          input#trainerTitle(
+            type="text"
+            name="trainerTitle"
+            placeholder="Pokémon Trainer"
+            maxlength="40"
+          )
+
+        .form-group
+          label(for="hometown") Hometown
+          input#hometown(
+            type="text"
+            name="hometown"
+            placeholder="Pallet Town"
+            maxlength="50"
+          )
+
+        .form-row
+          .form-group
+            label(for="password") Password *
+            input#password(
+              type="password"
+              name="password"
+              placeholder="Min. 6 characters"
+              required
+              minlength="6"
+            )
+
+          .form-group
+            label(for="confirmPassword") Confirm Password *
+            input#confirmPassword(
+              type="password"
+              name="confirmPassword"
+              placeholder="Repeat password"
+              required
+            )
+
+        button.btn.btn-primary(type="submit")
+          span 🚀 Start Journey
+
+      .auth-footer
+        p Already have an account? 
+          a(href="/login") Login here

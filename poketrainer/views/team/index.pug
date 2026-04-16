@@ -1,0 +1,162 @@
+extends ../layout
+
+block content
+  .team-page
+    .page-header
+      h1 My Team
+        span.team-count-badge #{teamSize}/6
+      p.subtitle Drag to reorder your Pokémon
+
+    .team-layout
+      //- Left: current team
+      .team-roster
+        if team.length === 0
+          .empty-state
+            .empty-icon 🌿
+            h2 No Pokémon Yet
+            p Add up to 6 Pokémon to build your team!
+        else
+          ul#sortable-team.team-list
+            each pokemon in team
+              li.team-slot(data-id=pokemon.id)
+                .drag-handle ⠿
+                img.slot-sprite(src=pokemon.spriteUrl alt=pokemon.name)
+                .slot-info
+                  .slot-name= pokemon.displayName
+                  .slot-species(style="text-transform:capitalize")= pokemon.name !== pokemon.displayName ? pokemon.name : ''
+                  .type-badges
+                    each type in pokemon.types
+                      span.type-badge(class='type-' + type)= type
+                  .slot-stats
+                    span HP #{pokemon.hp}
+                    span ATK #{pokemon.attack}
+                    span DEF #{pokemon.defense}
+                    span SPD #{pokemon.speed}
+
+                .slot-actions
+                  button.btn-icon.btn-nickname(
+                    title="Edit nickname"
+                    data-id=pokemon.id
+                    data-name=pokemon.nickname || ''
+                  ) ✏️
+                  form(action=`/team/${pokemon.id}?_method=DELETE` method="POST" style="display:inline")
+                    button.btn-icon.btn-danger(
+                      type="submit"
+                      title="Release Pokémon"
+                      onclick=`return confirm('Release ${pokemon.displayName}?')`
+                    ) ✕
+
+      //- Right: add Pokémon form
+      .add-pokemon-panel
+        h2 Add Pokémon
+        if teamSize >= 6
+          .panel-full
+            p.muted Your team is full!
+            p.hint Release a Pokémon to add a new one.
+        else
+          form.add-form(action="/team/add" method="POST")
+            .form-group
+              label(for="pokemonName") Pokémon Name
+              .search-row
+                input#pokemonName(
+                  type="text"
+                  name="pokemonName"
+                  placeholder="e.g. pikachu, eevee…"
+                  required
+                  autocomplete="off"
+                )
+              p.hint Any Pokémon from the PokéAPI (lowercase name or number)
+
+            .form-group
+              label(for="nickname") Nickname (optional)
+              input#nickname(
+                type="text"
+                name="nickname"
+                placeholder="e.g. Sparky"
+                maxlength="20"
+              )
+
+            button.btn.btn-primary(type="submit")
+              | ➕ Add to Team
+
+        hr
+        .quick-links
+          h3 Need ideas?
+          a.btn.btn-outline(href="/pokedex") Browse Pokédex →
+
+  //- Nickname modal
+  #nickname-modal.modal(style="display:none")
+    .modal-box
+      h3 Edit Nickname
+      form#nickname-form(method="POST")
+        input(type="hidden" name="_pokemonId")
+        .form-group
+          label Nickname
+          input#nickname-input(type="text" name="nickname" maxlength="20")
+          p.hint Leave blank to use the Pokémon's real name
+        .form-row.button-row
+          button.btn.btn-outline(type="button" id="modal-cancel") Cancel
+          button.btn.btn-primary(type="submit") Save
+
+  script.
+    // Nickname modal
+    const modal = document.getElementById('nickname-modal');
+    const nicknameForm = document.getElementById('nickname-form');
+    const nicknameInput = document.getElementById('nickname-input');
+
+    document.querySelectorAll('.btn-nickname').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const current = btn.dataset.name;
+        nicknameInput.value = current;
+        nicknameForm.action = `/team/${id}/nickname`;
+        modal.style.display = 'flex';
+        nicknameInput.focus();
+      });
+    });
+
+    document.getElementById('modal-cancel').addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    modal.addEventListener('click', e => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+
+    // Drag-to-reorder (vanilla JS)
+    const list = document.getElementById('sortable-team');
+    if (list) {
+      let dragged = null;
+
+      list.querySelectorAll('.team-slot').forEach(item => {
+        item.setAttribute('draggable', true);
+
+        item.addEventListener('dragstart', e => {
+          dragged = item;
+          item.classList.add('dragging');
+        });
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          saveOrder();
+        });
+        item.addEventListener('dragover', e => {
+          e.preventDefault();
+          const rect = item.getBoundingClientRect();
+          const midpoint = rect.y + rect.height / 2;
+          if (e.clientY < midpoint) {
+            list.insertBefore(dragged, item);
+          } else {
+            list.insertBefore(dragged, item.nextSibling);
+          }
+        });
+      });
+
+      function saveOrder() {
+        const ids = [...list.querySelectorAll('.team-slot')].map(el => el.dataset.id);
+        fetch('/team/reorder', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order: JSON.stringify(ids) })
+        });
+      }
+    }
