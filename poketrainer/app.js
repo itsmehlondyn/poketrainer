@@ -69,7 +69,7 @@ const PORT = process.env.PORT || 3000;
 
 sequelize.sync({ alter: true }).then(() => {
   console.log('Database synced.');
-  app.listen(PORT, () => console.log(`PokéTrainer running on http://localhost:${PORT}`));
+  app.listen(PORT, '0.0.0.0', () => console.log(`PokéTrainer running on http://localhost:${PORT}`));
 }).catch(err => {
   console.error('DB sync failed:', err);
 });
