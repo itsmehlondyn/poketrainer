@@ -24,8 +24,8 @@ block content
             span.type-badge(class='type-' + type)= type
 
         .poke-meta
-          span ↕ #{pokemon.height}m
-          span ⚖ #{pokemon.weight}kg
+          span #{pokemon.height}m
+          span #{pokemon.weight}kg
           if pokemon.abilities
             span Abilities: #{pokemon.abilities.join(', ')}
 
