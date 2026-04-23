@@ -65,11 +65,11 @@ app.use((err, req, res, next) => {
   res.status(500).render('error', { title: '500 - Server Error', message: err.message });
 });
 
-const PORT = process.env.PORT || 3011;
+const PORT = process.env.PORT || 3847;
 
 sequelize.sync().then(() => {
   console.log('Database synced.');
-  app.listen(PORT, '0.0.0.0', () => console.log(`PokéTrainer running on http://hopper.winthrop.edu:${PORT}`));
+  app.listen(PORT, () => console.log(`PokéTrainer running on http://hopper.winthrop.edu:${PORT}`));
 }).catch(err => {
   console.error('DB sync failed:', err);
 });
