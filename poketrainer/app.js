@@ -67,7 +67,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3009;
 
-sequelize.sync({ alter: true }).then(() => {
+sequelize.sync().then(() => {
   console.log('Database synced.');
   app.listen(PORT, '0.0.0.0', () => console.log(`PokéTrainer running on http://hopper.winthrop.edu:${PORT}`));
 }).catch(err => {
