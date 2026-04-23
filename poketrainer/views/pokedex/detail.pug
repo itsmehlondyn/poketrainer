@@ -11,7 +11,7 @@ block content
         if pokemon.spriteShiny
           .shiny-toggle
             img.poke-shiny-preview(src=pokemon.spriteShiny alt="Shiny" title="Shiny form")
-            span ✨ Shiny
+            span Shiny
 
       .poke-detail-right
         h1.poke-name= pokemon.name
@@ -43,6 +43,6 @@ block content
           if user
             form(action="/team/add" method="POST" style="display:inline")
               input(type="hidden" name="pokemonName" value=pokemon.name)
-              button.btn.btn-primary(type="submit") ➕ Add to Team
+              button.btn.btn-primary(type="submit") Add to Team
           else
             a.btn.btn-primary(href="/login") Login to Add to Team
