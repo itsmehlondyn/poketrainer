@@ -73,7 +73,7 @@ npm install
 npm start
 
 # 3. Open in browser
-# http://localhost:3000
+# http://hopper.winthrop.edu:3009/login
 ```
 
 The SQLite database is auto-created on first run via `sequelize.sync()`.
